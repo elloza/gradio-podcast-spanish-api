@@ -8,7 +8,9 @@ const postData = {
     "/path/to/plant_image.jpg",       // plant_image (file path or URL)
     "Planta con hojas verdes.",       // description
     "Riego, poda",                    // tasks
-    "Sin comentarios adicionales"     // comments (optional)
+    "Sin comentarios adicionales",    // comments (optional)
+    "es",                             // language
+    "Aaron Dreschner"                 // voice
   ]
 };
 

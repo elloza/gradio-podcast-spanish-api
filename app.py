@@ -2,9 +2,14 @@ import os
 import tempfile
 import gradio as gr
 
-from services.vlm import generate_description
-from services.tts import generate_audio
 import config
+from services.tts import get_tts_instance
+from services.vlm import get_vlm_instance
+
+tts_instance = get_tts_instance()
+vlm_instance = get_vlm_instance()
+available_voices = tts_instance.get_available_voices()
+available_languages = tts_instance.get_available_languages()
 
 def process_inputs(
     title, 
@@ -12,7 +17,9 @@ def process_inputs(
     plant_image, 
     description, 
     tasks,
-    comments=""
+    comments="",
+    language="es",
+    voice="Aaron Dreschner"
 ):
     """
     Process the input data and generate an audio narration.
@@ -24,13 +31,15 @@ def process_inputs(
         description: Description of the plant
         tasks: Current tasks to be performed on the plant
         comments: Optional comments about the plant
+        language: Language for the narration
+        voice: Voice for the narration
         
     Returns:
         Audio file path with the generated narration
     """
     try:
         # Step 1: Generate a textual description using VLM
-        narration_text = generate_description(
+        narration_text = vlm_instance.generate_description(
             title=title,
             location=location,
             image_path=plant_image,
@@ -40,7 +49,7 @@ def process_inputs(
         )
         
         # Step 2: Generate audio from the text
-        audio_path = generate_audio(narration_text)
+        audio_path = tts_instance.synthesize_text(voice, narration_text, language)
         
         return audio_path, narration_text
     
@@ -78,6 +87,8 @@ with gr.Blocks(title="Narración de Plantas para Invidentes") as demo:
                 placeholder="Comentarios adicionales sobre la planta...",
                 lines=2
             )
+            language_input = gr.Dropdown(label="Idioma", choices=list(available_languages.keys()), value="es")
+            voice_input = gr.Dropdown(label="Voz", choices=list(available_voices.keys()), value="Aaron Dreschner")
             gr.Markdown("#### Ejemplos de muestra")
             gr.Examples(
                 examples=[
@@ -102,10 +113,12 @@ with gr.Blocks(title="Narración de Plantas para Invidentes") as demo:
             plant_image_input, 
             description_input, 
             tasks_input,
-            comments_input
+            comments_input,
+            language_input,
+            voice_input
         ],
         outputs=[audio_output, text_output]
     )
 
 # API endpoints
-demo.queue().launch(server_name="0.0.0.0", server_port=config.PORT)
+demo.queue().launch(server_name="0.0.0.0", server_port=config.PORT,share=True)

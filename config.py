@@ -19,21 +19,11 @@ for directory in [AUDIO_OUTPUT_DIR, UPLOADS_DIR]:
     os.makedirs(directory, exist_ok=True)
 
 # VLM Model Configuration
-VLM_MODEL = os.getenv("VLM_MODEL", "gemini")  # Options: "gemini", "qwen"
+VLM_MODEL = os.getenv("VLM_MODEL", "gemini")
 
-# Gemini Configuration
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-GEMINI_MODEL_NAME = os.getenv("GEMINI_MODEL_NAME", "models/gemini-1.5-pro-vision")
-
-# Qwen Configuration (placeholder)
-QWEN_API_KEY = os.getenv("QWEN_API_KEY", "")
-QWEN_MODEL_NAME = os.getenv("QWEN_MODEL_NAME", "Qwen/Qwen2.5-VL")
+VLM_MODEL_NAME = os.getenv("VLM_MODEL_NAME", "gemini")
+VLM_API_KEY = os.getenv("VLM_API_KEY","")
+VLM_URL = os.getenv("VLM_URL","https://api.visionlanguage.io/v1/")
 
 # TTS Configuration
-TTS_MODEL = os.getenv("TTS_MODEL", "coqui")  # Options: "kokoro", "coqui", "zonos"
-
-# Kokoro TTS Configuration
-KOKORO_API_KEY = os.getenv("KOKORO_API_KEY", "")
-
-# Zonos TTS Configuration
-ZONOS_API_KEY = os.getenv("ZONOS_API_KEY", "")
+TTS_ENGINE = os.getenv("TTS_ENGINE", "xttsv2") 
